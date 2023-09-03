@@ -12,7 +12,7 @@ class ClassifierModel(tf.keras.Model):
         conv_block_dropout_rates: list[float],
         dense_block_units: list[int],
         dense_block_dropout_rates: list[float],
-    ):
+    ) -> None:
         super().__init__()
         self.conv_blocks = []
         for filters, kernel_size, strides, dropout_rate in zip(
@@ -26,7 +26,7 @@ class ClassifierModel(tf.keras.Model):
             dense_block = DenseBlock(units=units, dropout_rate=dropout_rate)
             self.dense_blocks.append(dense_block)
 
-        self.output_layer = tf.keras.layers.Dense(output_shape, activation='softmax')
+        self.output_layer = tf.keras.layers.Dense(output_shape, activation="softmax")
 
     def call(self, x: tf.Tensor, training: bool = False, mask=None) -> tf.Tensor:
         for block in self.conv_blocks:
