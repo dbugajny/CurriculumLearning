@@ -1,11 +1,10 @@
 import tensorflow as tf
-from blocks import ConvBlock, DenseBlock
+from curriculum_learning.models.blocks import ConvBlock, DenseBlock
 
 
 class ClassifierModel(tf.keras.Model):
     def __init__(
         self,
-        input_shape: tuple[int],
         output_shape: int,
         conv_block_filters: list[int],
         conv_block_kernel_sizes: list[int],
@@ -15,10 +14,6 @@ class ClassifierModel(tf.keras.Model):
         dense_block_dropout_rates: list[float],
     ):
         super().__init__()
-
-        self.input_layer = tf.keras.layers.Input(input_shape)
-        self.output_layer = tf.keras.layers.Dense(output_shape, activation='softmax')
-
         self.conv_blocks = []
         for filters, kernel_size, strides, dropout_rate in zip(
             conv_block_filters, conv_block_kernel_sizes, conv_block_strides, conv_block_dropout_rates
@@ -31,9 +26,9 @@ class ClassifierModel(tf.keras.Model):
             dense_block = DenseBlock(units=units, dropout_rate=dropout_rate)
             self.dense_blocks.append(dense_block)
 
-    def call(self, inputs, training=False):
-        x = self.input_layer(inputs)
+        self.output_layer = tf.keras.layers.Dense(output_shape, activation='softmax')
 
+    def call(self, x: tf.Tensor, training: bool = False, mask=None) -> tf.Tensor:
         for block in self.conv_blocks:
             x = block(x, training=training)
 

@@ -9,7 +9,7 @@ class ConvBlock(tf.keras.layers.Layer):
         self.activation = tf.keras.layers.ReLU()
         self.dropout = tf.keras.layers.Dropout(dropout_rate)
 
-    def call(self, inputs: tf.Tensor, training: bool = False) -> tf.Tensor:
+    def call(self, inputs: tf.Tensor, training: bool = False, mask=None) -> tf.Tensor:
         x = self.conv(inputs)
         x = self.normalization(x)
         x = self.activation(x)
@@ -26,7 +26,7 @@ class DenseBlock(tf.keras.layers.Layer):
         self.activation = tf.keras.layers.ReLU()
         self.dropout = tf.keras.layers.Dropout(dropout_rate)
 
-    def call(self, inputs: tf.Tensor, training: bool = False) -> tf.Tensor:
+    def call(self, inputs: tf.Tensor, training: bool = False, mask=None) -> tf.Tensor:
         x = self.dense(inputs)
         x = self.normalization(x)
         x = self.activation(x)
