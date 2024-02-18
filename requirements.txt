@@ -1,5 +1,5 @@
 tensorflow~=2.13.0
 setuptools==68.1.2
 PyYAML==6.0.1
-numpy==1.25.2
+numpy==1.24.0
 matplotlib==3.7.2

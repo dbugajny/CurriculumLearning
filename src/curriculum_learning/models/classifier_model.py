@@ -14,6 +14,7 @@ class ClassifierModel(tf.keras.Model):
         dense_block_dropout_rates: list[float],
     ) -> None:
         super().__init__()
+
         self.conv_blocks = []
         for filters, kernel_size, strides, dropout_rate in zip(
             conv_block_filters, conv_block_kernel_sizes, conv_block_strides, conv_block_dropout_rates
@@ -36,6 +37,7 @@ class ClassifierModel(tf.keras.Model):
 
         for block in self.dense_blocks:
             x = block(x, training=training)
+
         x = self.output_layer(x)
 
         return x
