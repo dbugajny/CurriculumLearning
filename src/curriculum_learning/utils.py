@@ -18,7 +18,4 @@ def load_data(filepath):
 
 
 def calculate_loss_per_sample(y_true, y_pred, loss):
-    losses = []
-    for i in range(len(y_true)):
-        losses.append(loss(y_true[i], y_pred[i]))
-    return losses
+    return [loss(y_true[i], y_pred[i]) for i in range(len(y_true))]
