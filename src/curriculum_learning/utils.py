@@ -2,6 +2,14 @@ import pickle
 import numpy as np
 import pathlib
 from PIL import Image
+from enum import Enum
+import tensorflow as tf
+
+
+class OrderType(Enum):
+    RANDOM = "random"
+    PROBA = "proba"
+    FIXED = "fixed"
 
 
 def unpickle(filepath):
@@ -19,23 +27,6 @@ def load_data(filepath):
     return x, y
 
 
-def calculate_loss_per_sample(y_true, y_pred, loss):
-    return [loss(y_true[i], y_pred[i]) for i in range(len(y_true))]
-
-
-def normalize_losses_per_group(groups_counts, losses):
-    normalized_losses = []
-    i = 0
-
-    for count in groups_counts:
-        la_batch = losses[i:i + count]
-        normalized_loss = (la_batch - np.mean(la_batch)) / np.std(la_batch)
-        normalized_losses.extend(normalized_loss)
-        i += count
-
-    return normalized_losses
-
-
 def load_class_data(filepath):
     class_data = []
 
@@ -45,3 +36,39 @@ def load_class_data(filepath):
             class_data.append(img)
 
     return np.array(class_data)
+
+
+def normalize_losses_per_group(groups_counts, losses):
+    normalized_losses = []
+    i = 0
+
+    for count in groups_counts:
+        la_batch = losses[i : i + count]
+        normalized_loss = (la_batch - np.mean(la_batch)) / np.std(la_batch)
+        normalized_losses.extend(normalized_loss)
+        i += count
+
+    return np.array(normalized_losses)
+
+
+def calculate_proba(model, x_sorted, y_sorted, counts, negative_loss=True):
+    y_pred = model.predict(x_sorted, verbose=0)
+
+    losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
+
+    losses_normalized = normalize_losses_per_group(counts, losses_assessment)
+
+    if negative_loss:
+        losses_normalized *= -1
+
+    return np.exp(losses_normalized) / sum(np.exp(losses_normalized))
+
+
+def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
+    match order_type:
+        case OrderType.RANDOM.value:
+            return np.random.choice(range(len(samples_proba)), size=n_samples, replace=False)
+        case OrderType.PROBA.value:
+            return np.random.choice(range(len(samples_proba)), p=samples_proba, size=n_samples, replace=False)
+        case OrderType.FIXED.value:
+            return np.argsort(-samples_proba)[:n_samples]
