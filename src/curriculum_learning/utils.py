@@ -18,13 +18,21 @@ def unpickle(filepath):
     return data
 
 
-def load_data(filepath):
-    data = unpickle(filepath)
+def load_cifar_data(filepath):
+    x = []
+    y = []
 
-    x = data[b"data"].reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float32")
-    y = np.array(data[b"labels"])
+    batches = ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]
+    for batch in batches:
+        data = unpickle(filepath + batch)
 
-    return x, y
+        x_batch = data[b"data"].reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float32")
+        y_batch = np.array(data[b"labels"])
+
+        x.append(x_batch)
+        y.append(y_batch)
+
+    return np.array(x), np.array(y)
 
 
 def load_class_data(filepath):
