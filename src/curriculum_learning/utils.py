@@ -53,7 +53,7 @@ def normalize_losses_per_group(groups_counts, losses):
     for count in groups_counts:
         la_batch = losses[i : i + count]
         normalized_loss = (la_batch - np.mean(la_batch)) / np.std(la_batch)
-        normalized_losses.extend(normalized_loss)
+        normalized_losses.extend(normalized_loss.numpy())
         i += count
 
     return np.array(normalized_losses)
@@ -73,10 +73,9 @@ def calculate_proba(model, x_sorted, y_sorted, counts, negative_loss=True):
 
 
 def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
-    match order_type:
-        case OrderType.RANDOM.value:
-            return np.random.choice(range(len(samples_proba)), size=n_samples, replace=False)
-        case OrderType.PROBA.value:
-            return np.random.choice(range(len(samples_proba)), p=samples_proba, size=n_samples, replace=False)
-        case OrderType.FIXED.value:
-            return np.argsort(-samples_proba)[:n_samples]
+    if order_type == OrderType.RANDOM.value:
+        return np.random.choice(range(len(samples_proba)), size=n_samples, replace=False)
+    elif order_type == OrderType.PROBA.value:
+        return np.random.choice(range(len(samples_proba)), p=samples_proba, size=n_samples, replace=False)
+    elif order_type == OrderType.FIXED.value:
+        return np.argsort(-samples_proba)[:n_samples]
