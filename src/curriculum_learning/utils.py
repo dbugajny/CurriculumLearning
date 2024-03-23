@@ -32,7 +32,7 @@ def load_cifar_data(filepath):
         x.append(x_batch)
         y.append(y_batch)
 
-    return np.array(x), np.array(y)
+    return np.array(x).reshape(-1, 32, 32, 3), np.array(y).reshape(-1)
 
 
 def load_class_data(filepath):
