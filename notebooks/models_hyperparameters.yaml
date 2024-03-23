@@ -8,12 +8,12 @@ assessment_model:
 
 
 test_model_1:
-  conv_block_filters: [64, 32, 32]
+  conv_block_filters: [64, 64, 64]
   conv_block_kernel_sizes: [3, 3, 3]
   conv_block_strides: [2, 2, 2]
   conv_block_dropout_rates: [0.25, 0.25, 0.25]
-  dense_block_units: [64, 64]
-  dense_block_dropout_rates: [0.5, 0.5]
+  dense_block_units: [32, 32]
+  dense_block_dropout_rates: [0.25, 0.25]
 
 test_model_2:
   conv_block_filters: [32, 32, 32]
