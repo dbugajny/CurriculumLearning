@@ -8,18 +8,8 @@ assessment_proba_best:
   progressive: False
   order_type: proba
 
-assessment_proba_worst:
-  negative_loss: False
-  progressive: False
-  order_type: proba
-
 assessment_fixed_best:
   negative_loss: True
-  progressive: False
-  order_type: fixed
-
-assessment_fixed_worst:
-  negative_loss: False
   progressive: False
   order_type: fixed
 
@@ -28,17 +18,27 @@ progressive_proba_best:
   progressive: True
   order_type: proba
 
-progressive_proba_worst:
-  negative_loss: False
-  progressive: True
-  order_type: proba
-
 progressive_fixed_best:
   negative_loss: True
   progressive: True
   order_type: fixed
 
-progressive_fixed_worst:
-  negative_loss: False
-  progressive: True
-  order_type: fixed
+#assessment_proba_worst:
+#  negative_loss: False
+#  progressive: False
+#  order_type: proba
+#
+#assessment_fixed_worst:
+#  negative_loss: False
+#  progressive: False
+#  order_type: fixed
+#
+#progressive_proba_worst:
+#  negative_loss: False
+#  progressive: True
+#  order_type: proba
+#
+#progressive_fixed_worst:
+#  negative_loss: False
+#  progressive: True
+#  order_type: fixed
