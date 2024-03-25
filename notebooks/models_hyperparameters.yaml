@@ -6,7 +6,6 @@ assessment_model:
   dense_block_units: [32, 32]
   dense_block_dropout_rates: [0.2]
 
-
 test_model_1:
   conv_block_filters: [64, 64, 64]
   conv_block_kernel_sizes: [3, 3, 3]
