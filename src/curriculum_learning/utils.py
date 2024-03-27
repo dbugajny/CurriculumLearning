@@ -79,3 +79,26 @@ def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
         return np.random.choice(range(len(samples_proba)), p=samples_proba, size=n_samples, replace=False)
     elif order_type == OrderType.FIXED.value:
         return np.argsort(-samples_proba)[:n_samples]
+
+
+def normalize_losses_per_group2(groups_counts, losses):
+    normalized_losses = []
+    i = 0
+
+    for count in groups_counts:
+        la_batch = losses[i: i + count]
+        normalized_loss = - (la_batch - np.mean(la_batch)) / np.std(la_batch)
+        normalized_loss2 = np.exp(normalized_loss) / sum(np.exp(normalized_loss))
+
+        normalized_losses.extend(normalized_loss2)
+
+        i += count
+
+    return np.array(normalized_losses) / len(groups_counts)
+
+
+def calculate_proba2(model, x_sorted, y_sorted, counts):
+    y_pred = model.predict(x_sorted, verbose=0)
+    losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
+
+    return normalize_losses_per_group2(counts, losses_assessment)

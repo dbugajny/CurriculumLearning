@@ -1,31 +1,15 @@
 assessment_model:
-  conv_block_filters: [32, 32, 32]
+  conv_block_filters: [16, 16, 16]
   conv_block_kernel_sizes: [3, 3, 3]
   conv_block_strides: [2, 2, 2]
   conv_block_dropout_rates: [0.2, 0.2, 0.2]
-  dense_block_units: [32, 32]
+  dense_block_units: [16, 16]
   dense_block_dropout_rates: [0.2]
 
-test_model_1:
+test_model:
   conv_block_filters: [64, 64, 64]
   conv_block_kernel_sizes: [3, 3, 3]
   conv_block_strides: [2, 2, 2]
   conv_block_dropout_rates: [0.1, 0.1, 0.1]
   dense_block_units: [64, 64]
   dense_block_dropout_rates: [0.1, 0.1]
-
-test_model_2:
-  conv_block_filters: [32, 32, 32]
-  conv_block_kernel_sizes: [3, 3, 3]
-  conv_block_strides: [2, 2, 2]
-  conv_block_dropout_rates: [0.25, 0.25, 0.25]
-  dense_block_units: [64, 64]
-  dense_block_dropout_rates: [0.25, 0.25]
-
-test_model_3:
-  conv_block_filters: [32, 32, 32]
-  conv_block_kernel_sizes: [3, 3, 3]
-  conv_block_strides: [2, 2, 2]
-  conv_block_dropout_rates: [0.25, 0.25, 0.25]
-  dense_block_units: [64, 64]
-  dense_block_dropout_rates: [0.25, 0.25]
