@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 
-class ConvBlock(tf.keras.layers.Layer):
+class ConvBlock(tf.keras.Model):
     def __init__(self, filters: int, kernel_size: int, strides: int, dropout_rate: float) -> None:
         super().__init__()
         self.conv = tf.keras.layers.Conv2D(filters=filters, kernel_size=kernel_size, strides=strides, padding="same")
@@ -18,7 +18,7 @@ class ConvBlock(tf.keras.layers.Layer):
         return x
 
 
-class DenseBlock(tf.keras.layers.Layer):
+class DenseBlock(tf.keras.Model):
     def __init__(self, units: int, dropout_rate: float) -> None:
         super().__init__()
         self.dense = tf.keras.layers.Dense(units)

@@ -46,32 +46,6 @@ def load_class_data(filepath):
     return np.array(class_data)
 
 
-def normalize_losses_per_group(groups_counts, losses):
-    normalized_losses = []
-    i = 0
-
-    for count in groups_counts:
-        la_batch = losses[i : i + count]
-        normalized_loss = (la_batch - np.mean(la_batch)) / np.std(la_batch)
-        normalized_losses.extend(normalized_loss.numpy())
-        i += count
-
-    return np.array(normalized_losses)
-
-
-def calculate_proba(model, x_sorted, y_sorted, counts, negative_loss=True):
-    y_pred = model.predict(x_sorted, verbose=0)
-
-    losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
-
-    losses_normalized = normalize_losses_per_group(counts, losses_assessment)
-
-    if negative_loss:
-        losses_normalized *= -1
-
-    return np.exp(losses_normalized) / sum(np.exp(losses_normalized))
-
-
 def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
     if order_type == OrderType.RANDOM.value:
         return np.random.choice(range(len(samples_proba)), size=n_samples, replace=False)
@@ -81,24 +55,24 @@ def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
         return np.argsort(-samples_proba)[:n_samples]
 
 
-def normalize_losses_per_group2(groups_counts, losses):
+def normalize_losses_per_group(losses, groups_counts):
     normalized_losses = []
     i = 0
 
     for count in groups_counts:
         la_batch = losses[i: i + count]
         normalized_loss = - (la_batch - np.mean(la_batch)) / np.std(la_batch)
-        normalized_loss2 = np.exp(normalized_loss) / sum(np.exp(normalized_loss))
+        normalized_loss = np.exp(normalized_loss) / sum(np.exp(normalized_loss))
 
-        normalized_losses.extend(normalized_loss2)
+        normalized_losses.extend(normalized_loss)
 
         i += count
 
     return np.array(normalized_losses) / len(groups_counts)
 
 
-def calculate_proba2(model, x_sorted, y_sorted, counts):
+def calculate_proba(model, x_sorted, y_sorted, counts):
     y_pred = model.predict(x_sorted, verbose=0)
     losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
 
-    return normalize_losses_per_group2(counts, losses_assessment)
+    return normalize_losses_per_group(losses_assessment, counts)
