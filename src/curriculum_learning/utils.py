@@ -71,8 +71,8 @@ def normalize_losses_per_group(losses, groups_counts):
     return np.array(normalized_losses) / len(groups_counts)
 
 
-def calculate_proba(model, x_sorted, y_sorted, counts):
-    y_pred = model.predict(x_sorted, verbose=0)
+def calculate_proba(model, x_sorted, y_sorted, counts, batch_size=128):
+    y_pred = model.predict(x_sorted, verbose=0, batch_size=batch_size)
     losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
 
     return normalize_losses_per_group(losses_assessment, counts)

@@ -6,6 +6,9 @@ random:
 proba_best:
   order_type: proba
 
+fixed_best:
+  order_type: fixed
+
 #assessment_proba_best:
 #  negative_loss: True
 #  progressive: False
