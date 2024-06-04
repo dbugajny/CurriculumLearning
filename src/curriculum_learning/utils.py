@@ -4,6 +4,7 @@ import pathlib
 from PIL import Image
 from enum import Enum
 import tensorflow as tf
+import cv2
 
 
 class OrderType(Enum):
@@ -76,3 +77,16 @@ def calculate_proba(model, x_sorted, y_sorted, counts, batch_size=128):
     losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
 
     return normalize_losses_per_group(losses_assessment, counts)
+
+
+def sobel_edge_detector(image, blur=False):
+    if blur is True:
+        image = cv2.GaussianBlur(image, (3, 3), sigmaX=0, sigmaY=0)
+
+    sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+
+    magnitude = np.sqrt(sobel_x ** 2 + sobel_y ** 2)
+    threshold = 125
+
+    return (magnitude > threshold).astype(int) * 255
