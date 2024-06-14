@@ -79,6 +79,15 @@ def calculate_proba(model, x_sorted, y_sorted, counts, batch_size=128):
     return normalize_losses_per_group(losses_assessment, counts)
 
 
+def calculate_proba_edges(x_sorted, counts, blur=True):
+    x_edges = []
+    for x_ in x_sorted:
+        x_edges.append(sobel_edge_detector(x_ * 255, blur=blur))
+    losses_assessment = np.sum(x_edges, axis=(1, 2, 3))
+
+    return normalize_losses_per_group(losses_assessment, counts)
+
+
 def sobel_edge_detector(image, blur=False):
     if blur is True:
         image = cv2.GaussianBlur(image, (3, 3), sigmaX=0, sigmaY=0)
