@@ -1,4 +1,15 @@
-test_model_1:
+random:
+  negative_loss: False
+  progressive: False
+  order_type: random
+
+proba_best:
+  order_type: proba
+
+fixed_best:
+  order_type: fixed
+
+test_model:
   conv_block_filters: [16, 32, 64]
   conv_block_kernel_sizes: [3, 3, 3]
   conv_block_strides: [2, 2, 2]

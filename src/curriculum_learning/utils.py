@@ -13,46 +13,12 @@ class OrderType(Enum):
     FIXED = "fixed"
 
 
-def unpickle(filepath):
-    with open(filepath, "rb") as file:
-        data = pickle.load(file, encoding="bytes")
-    return data
-
-
-def load_cifar_data(filepath):
-    x = []
-    y = []
-
-    batches = ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]
-    for batch in batches:
-        data = unpickle(filepath + batch)
-
-        x_batch = data[b"data"].reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float32")
-        y_batch = np.array(data[b"labels"])
-
-        x.append(x_batch)
-        y.append(y_batch)
-
-    return np.array(x).reshape(-1, 32, 32, 3), np.array(y).reshape(-1)
-
-
-def load_class_data(filepath):
-    class_data = []
-
-    for img_path in list(pathlib.Path(filepath).iterdir())[:500]:
-        img = np.array(Image.open(img_path))
-        if img.shape == (150, 150, 3):
-            class_data.append(img)
-
-    return np.array(class_data)
-
-
 def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
-    if order_type == OrderType.RANDOM.value:
+    if order_type == OrderType.RANDOM:
         return np.random.choice(range(len(samples_proba)), size=n_samples, replace=False)
-    elif order_type == OrderType.PROBA.value:
+    elif order_type == OrderType.PROBA:
         return np.random.choice(range(len(samples_proba)), p=samples_proba, size=n_samples, replace=False)
-    elif order_type == OrderType.FIXED.value:
+    elif order_type == OrderType.FIXED:
         return np.argsort(-samples_proba)[:n_samples]
 
 
@@ -72,20 +38,16 @@ def normalize_losses_per_group(losses, groups_counts):
     return np.array(normalized_losses) / len(groups_counts)
 
 
-def calculate_proba(model, x_sorted, y_sorted, counts, batch_size=128):
+def calculate_values_losses(model, x_sorted, y_sorted, batch_size=128):
     y_pred = model.predict(x_sorted, verbose=0, batch_size=batch_size)
-    losses_assessment = tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
-
-    return normalize_losses_per_group(losses_assessment, counts)
+    return tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
 
 
-def calculate_proba_edges(x_sorted, counts, blur=True):
+def calculate_values_edges(x_sorted, counts, blur=True):
     x_edges = []
     for x_ in x_sorted:
         x_edges.append(sobel_edge_detector(x_ * 255, blur=blur))
-    losses_assessment = np.sum(x_edges, axis=(1, 2, 3))
-
-    return normalize_losses_per_group(losses_assessment, counts)
+    return np.sum(x_edges, axis=(1, 2, 3))
 
 
 def sobel_edge_detector(image, blur=False):
