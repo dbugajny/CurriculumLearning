@@ -22,7 +22,7 @@ def chose_samples(n_samples: int, samples_proba, order_type: OrderType):
         return np.argsort(-samples_proba)[:n_samples]
 
 
-def normalize_losses_per_group(losses, groups_counts):
+def normalize_values_per_group(losses, groups_counts):
     normalized_losses = []
     i = 0
 
@@ -43,7 +43,7 @@ def calculate_values_losses(model, x_sorted, y_sorted, batch_size=128):
     return tf.keras.losses.sparse_categorical_crossentropy(y_sorted, y_pred)
 
 
-def calculate_values_edges(x_sorted, counts, blur=True):
+def calculate_values_edges(x_sorted, blur=True):
     x_edges = []
     for x_ in x_sorted:
         x_edges.append(sobel_edge_detector(x_ * 255, blur=blur))
