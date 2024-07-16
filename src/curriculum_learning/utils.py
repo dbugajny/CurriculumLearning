@@ -1,10 +1,9 @@
-import pickle
 import numpy as np
-import pathlib
-from PIL import Image
+from sklearn import metrics
 from enum import Enum
 import tensorflow as tf
 import cv2
+import pandas as pd
 
 
 class OrderType(Enum):
@@ -61,3 +60,28 @@ def sobel_edge_detector(image, blur=False):
     threshold = 125
 
     return (magnitude > threshold).astype(int) * 255
+
+
+def calculate_metrics(y_true, y_pred, acc, re_mi, re_ma, pr_mi, pr_ma, f1_mi, f1_ma):
+    acc.append(metrics.accuracy_score(y_true, y_pred))
+
+    re_mi.append(metrics.recall_score(y_true, y_pred, average="micro"))
+    re_ma.append(metrics.recall_score(y_true, y_pred, average="macro"))
+
+    pr_mi.append(metrics.precision_score(y_true, y_pred, average="micro"))
+    pr_ma.append(metrics.precision_score(y_true, y_pred, average="macro"))
+
+    f1_mi.append(metrics.f1_score(y_true, y_pred, average="micro"))
+    f1_ma.append(metrics.f1_score(y_true, y_pred, average="macro"))
+
+
+def create_df_scores(acc, re_mi, re_ma, pr_mi, pr_ma, f1_mi, f1_ma):
+    return pd.DataFrame({
+        "accuracy": acc,
+        "recall_micro": re_mi,
+        "recall_macro": re_ma,
+        "precision_micro": pr_mi,
+        "precision_macro": pr_ma,
+        "f1_micro": f1_mi,
+        "f1_macro": f1_ma,
+    })
