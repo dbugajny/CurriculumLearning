@@ -62,8 +62,9 @@ def sobel_edge_detector(image, blur=False):
     return (magnitude > threshold).astype(int) * 255
 
 
-def calculate_metrics(y_true, y_pred, acc, re_ma, re_wg, pr_ma, pr_wg, f1_ma, f1_wg):
+def calculate_metrics(y_true, y_pred, acc, b_acc, re_ma, re_wg, pr_ma, pr_wg, f1_ma, f1_wg):
     acc.append(metrics.accuracy_score(y_true, y_pred))
+    b_acc.append(metrics.balanced_accuracy_score(y_true, y_pred))
 
     re_ma.append(metrics.recall_score(y_true, y_pred, average="macro"))
     re_wg.append(metrics.recall_score(y_true, y_pred, average="weighted"))
@@ -75,9 +76,10 @@ def calculate_metrics(y_true, y_pred, acc, re_ma, re_wg, pr_ma, pr_wg, f1_ma, f1
     f1_wg.append(metrics.f1_score(y_true, y_pred, average="weighted"))
 
 
-def create_df_scores(acc, re_ma, re_wg, pr_ma, pr_wg, f1_ma, f1_wg):
+def create_df_scores(acc, b_acc, re_ma, re_wg, pr_ma, pr_wg, f1_ma, f1_wg):
     return pd.DataFrame({
         "accuracy": acc,
+        "balanced_accuracy": b_acc,
         "recall_macro": re_ma,
         "recall_weighted": re_wg,
         "precision_macro": pr_ma,
