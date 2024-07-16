@@ -85,3 +85,13 @@ def create_df_scores(acc, re_mi, re_ma, pr_mi, pr_ma, f1_mi, f1_ma):
         "f1_micro": f1_mi,
         "f1_macro": f1_ma,
     })
+
+
+MODEL_ARCHITECTURE = {
+    'conv_block_filters': [16, 32, 64],
+    'conv_block_kernel_sizes': [3, 3, 3],
+    'conv_block_strides': [2, 2, 2],
+    'conv_block_dropout_rates': [0.2, 0.2, 0.2],
+    'dense_block_units': [32],
+    'dense_block_dropout_rates': [0.5]
+}
